@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment - DineNDream</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#fff8f0; margin:0; padding:0; }
+  header { background:#ff6f61; color:white; padding:15px 20px; text-align:center; }
+  main { padding:20px; max-width:500px; margin:30px auto; background:white; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
+  h2 { text-align:center; margin-bottom:20px; }
+  .cart-item { display:flex; justify-content:space-between; margin-bottom:10px; }
+  .total { font-weight:bold; margin-top:20px; text-align:right; font-size:18px; }
+  .payment-methods { display:flex; justify-content:space-around; margin-top:30px; margin-bottom:20px; }
+  .payment-methods button { padding:10px 15px; border:none; border-radius:20px; cursor:pointer; font-size:16px; background:#ff9800; color:white; }
+  .payment-form { display:none; flex-direction:column; gap:15px; margin-top:20px; }
+  .payment-form input { padding:10px; font-size:16px; border-radius:8px; border:1px solid #ccc; width:100%; }
+  .pay-button { padding:10px 15px; background:#ff6f61; color:white; font-size:16px; border:none; border-radius:20px; cursor:pointer; }
+  #qrCode { text-align:center; margin-top:20px; font-size:18px; font-weight:bold; color:#555; padding:20px; border:2px dashed #ff9800; border-radius:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DineNDream Payment</h1>
+</header>
+
+<main>
+  <h2>Cart Summary</h2>
+  <div id="cartItems"></div>
+  <div class="total" id="totalAmount"></div>
+
+  <h2>Select Payment Method</h2>
+  <div class="payment-methods">
+    <button onclick="showForm('card')">💳 Card</button>
+    <button onclick="showForm('upi')">📱 UPI</button>
+    <button onclick="showForm('cash')">💵 Cash</button>
+    <button onclick="showForm('qr')">🔍 QR Scanner</button>
+  </div>
+
+  <!-- Card Payment Form -->
+  <div id="cardForm" class="payment-form">
+    <input type="text" id="cardNumber" placeholder="Card Number (xxxx-xxxx-xxxx-xxxx)">
+    <input type="text" id="expiry" placeholder="Expiry Date (MM/YY)">
+    <input type="text" id="cvv" placeholder="CVV">
+    <button class="pay-button" onclick="pay('Card')">Pay ₹<span id="cardTotal"></span></button>
+  </div>
+
+  <!-- UPI Payment Form -->
+  <div id="upiForm" class="payment-form">
+    <input type="text" id="upiId" placeholder="Enter UPI ID (example@upi)">
+    <button class="pay-button" onclick="pay('UPI')">Pay ₹<span id="upiTotal"></span></button>
+  </div>
+
+  <!-- Cash Payment Form -->
+  <div id="cashForm" class="payment-form">
+    <p>Pay ₹<span id="cashTotal"></span> in cash at the counter.</p>
+    <button class="pay-button" onclick="pay('Cash')">Confirm Cash Payment</button>
+  </div>
+
+  <!-- QR Scanner Form -->
+  <div id="qrForm" class="payment-form">
+    <div id="qrCode">Scan this QR to Pay ₹<span id="qrTotal"></span></div>
+    <button class="pay-button" onclick="pay('QR Scanner')">I Paid</button>
+  </div>
+</main>
+
+<script>
+// Retrieve cart from localStorage
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+const cartItems = document.getElementById('cartItems');
+const totalAmount = document.getElementById('totalAmount');
+
+let total = 0;
+cart.forEach(item => {
+  const div = document.createElement('div');
+  div.className = 'cart-item';
+  div.innerHTML = `<span>${item.name}</span><span>₹${item.price}</span>`;
+  cartItems.appendChild(div);
+  total += item.price;
+});
+
+// Display total in all forms
+document.getElementById('cardTotal').textContent = total;
+document.getElementById('upiTotal').textContent = total;
+document.getElementById('cashTotal').textContent = total;
+document.getElementById('qrTotal').textContent = total;
+totalAmount.textContent = `Total: ₹${total}`;
+
+function showForm(method) {
+  document.getElementById('cardForm').style.display = 'none';
+  document.getElementById('upiForm').style.display = 'none';
+  document.getElementById('cashForm').style.display = 'none';
+  document.getElementById('qrForm').style.display = 'none';
+
+  if(method === 'card') document.getElementById('cardForm').style.display = 'flex';
+  else if(method === 'upi') document.getElementById('upiForm').style.display = 'flex';
+  else if(method === 'cash') document.getElementById('cashForm').style.display = 'flex';
+  else if(method === 'qr') document.getElementById('qrForm').style.display = 'flex';
+}
+
+function pay(method) {
+  if(method === 'Card') {
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
+    if(!cardNumber || !expiry || !cvv) { alert("Please fill all card details!"); return; }
+  }
+  if(method === 'UPI') {
+    const upiId = document.getElementById('upiId').value;
+    if(!upiId) { alert("Please enter your UPI ID!"); return; }
+  }
+  alert(`Payment successful via ${method}! Total: ₹${total}`);
+  localStorage.removeItem('cart');
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>

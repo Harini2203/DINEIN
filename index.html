@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DineNDream</title>
+<style>
+/* Reset */
+* { margin:0; padding:0; box-sizing:border-box; font-family: Arial,sans-serif; }
+
+/* Header */
+header {
+  background: #ff6f61; 
+  color:white;
+  padding: 20px 50px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top:0;
+  z-index: 1000;
+}
+header .logo { font-size:1.5rem; font-weight:bold;}
+header nav a {
+  color:white; text-decoration:none; margin-left:25px; font-weight:bold; transition:0.3s;
+}
+header nav a:hover { color: #ffd700; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #ff6f61, #ffb347);
+  height: 70vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+  flex-direction:column;
+}
+.hero h1 { font-size:3rem; margin-bottom:15px;}
+.hero p { font-size:1.2rem; margin-bottom:20px;}
+.hero button {
+  padding:12px 25px; background:#ffd700; color:#333; border:none; border-radius:5px; font-weight:bold; cursor:pointer;
+  transition:0.3s;
+}
+.hero button:hover { background:#e6c200; }
+
+/* Features */
+.features {
+  display:flex;
+  justify-content:space-around;
+  flex-wrap:wrap;
+  padding:50px 0;
+  background:#fceabb;
+}
+.feature-card {
+  background:white; width:30%; min-width:250px;
+  margin:15px; padding:25px; border-radius:10px; text-align:center;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.feature-card:hover { transform:translateY(-10px); box-shadow:0 10px 20px rgba(0,0,0,0.2);}
+.feature-card h2 { font-size:1.5rem; margin-bottom:10px;}
+.feature-card p { color:#666; }
+
+/* Menu Section */
+.menu-section {
+  background:#ffe6e6; padding:50px 0; text-align:center;
+}
+.menu-section h2 { font-size:2rem; margin-bottom:30px; }
+.menu-items { display:flex; justify-content:space-around; flex-wrap:wrap; }
+.menu-item {
+  background:white; width:250px; margin:15px; padding:20px; border-radius:10px; box-shadow:0 6px 15px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.menu-item:hover { transform:translateY(-10px); box-shadow:0 10px 20px rgba(0,0,0,0.2);}
+.menu-item img { width:100%; border-radius:10px; margin-bottom:15px;}
+
+/* Table Booking Section */
+.booking {
+  background:#d0f0c0; padding:50px 0; text-align:center;
+}
+.booking h2 { font-size:2rem; margin-bottom:20px;}
+.table-grid {
+  display:flex; justify-content:center; flex-wrap:wrap; gap:20px; margin-top:20px;
+}
+.table-card {
+  background:#4caf50; color:white; padding:20px; border-radius:10px; width:120px; text-align:center; cursor:pointer;
+  transition:0.3s;
+}
+.table-card.occupied { background:grey; cursor:not-allowed; }
+.table-card.selected { background:#ff9800; transform:scale(1.1); }
+.table-card:hover { transform:scale(1.1); }
+
+/* Footer */
+footer {
+  background:#333; color:white; text-align:center; padding:20px 0; font-size:0.9rem;
+}
+
+/* Responsive */
+@media(max-width:768px) {
+  .features, .menu-items, .table-grid { flex-direction:column; align-items:center; }
+  .feature-card, .menu-item, .table-card { width:80%; }
+  .hero h1 { font-size:2.2rem;}
+  .hero p { font-size:1rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🍽️ DineNDream</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="index.html#booking">Tables</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Welcome to DineNDream</h1>
+  <p>Reserve tables and order your favorite meals effortlessly.</p>
+  <button onclick="document.querySelector('.booking').scrollIntoView({ behavior: 'smooth' })">Book a Table</button>
+</section>
+
+<section class="features">
+  <div class="feature-card">
+    <h2>🍕 Delicious Menu</h2>
+    <p>Wide variety of meals made with love.</p>
+  </div>
+  <div class="feature-card">
+    <h2>🪑 Easy Booking</h2>
+    <p>Select your table and seats easily.</p>
+  </div>
+  <div class="feature-card">
+    <h2>💳 Multiple Payments</h2>
+    <p>Pay securely with Card, UPI, or Cash.</p>
+  </div>
+</section>
+
+<section class="booking" id="booking">
+  <h2>Choose Your Table</h2>
+  <div class="table-grid">
+    <div class="table-card" data-id="1">Table 1<br>Seats:2 ✅</div>
+    <div class="table-card" data-id="2">Table 2<br>Seats:4 ✅</div>
+    <div class="table-card" data-id="3">Table 3<br>Seats:6 ❌</div>
+    <div class="table-card" data-id="4">Table 4<br>Seats:2 ✅</div>
+    <div class="table-card" data-id="5">Table 5<br>Seats:4 ✅</div>
+    <div class="table-card" data-id="6">Table 6<br>Seats:6 ✅</div>
+  </div>
+  <p id="selectedTableMsg" style="margin-top:20px; font-weight:bold; color:#333;"></p>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const tables = document.querySelectorAll(".table-card");
+  const msg = document.getElementById("selectedTableMsg");
+
+  // Load occupied tables from localStorage
+  const occupiedTables = JSON.parse(localStorage.getItem("occupiedTables")) || [];
+
+  tables.forEach(table => {
+    const id = table.dataset.id;
+
+    // Mark table as occupied if in localStorage
+    if(occupiedTables.includes(id)) {
+      table.classList.add("occupied");
+      table.innerHTML = table.innerHTML.replace("✅", "❌");
+    }
+
+    table.addEventListener("click", () => {
+      if (table.classList.contains("occupied")) {
+        alert("❌ This table is already occupied. Please choose another.");
+        return;
+      }
+
+      // Remove selection from other tables
+      tables.forEach(t => t.classList.remove("selected"));
+
+      // Highlight this one
+      table.classList.add("selected");
+      msg.textContent = "✅ You selected " + table.innerText.split("\n")[0];
+
+      // Save selection to localStorage
+      localStorage.setItem("selectedTable", table.innerText.split("\n")[0]);
+
+      // Mark this table as occupied in localStorage
+      occupiedTables.push(id);
+      localStorage.setItem("occupiedTables", JSON.stringify(occupiedTables));
+
+      // Redirect to Menu page after selection
+      setTimeout(() => {
+        window.location.href = "menu.html";
+      }, 800);
+    });
+  });
+});
+</script>
+
+<footer>
+  <p>&copy; 2025 DineNDream. All rights reserved.</p>
+
+</body>
+</html>
